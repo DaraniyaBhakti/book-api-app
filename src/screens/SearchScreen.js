@@ -1,16 +1,26 @@
 import React,{useState, useEffect} from 'react';
-import {Text,View, TouchableOpacity,StyleSheet, FlatList} from 'react-native';
+import {Text,View,StyleSheet, FlatList} from 'react-native';
 import useResults from '../hooks/useResults';
 import SearchBar from '../components/SearchBar';
 import ListItem from '../components/ListItem';
+
 const SearchScreen = () => {
 
     const [term,setTerm] = useState('');
     const [searchBook, result, errorMessage] = useResults();
+    const [valid,setValid]= useState(false)
     
-    // console.log(!!result? result:null);
+    const isValid = () => {
+        
+        if(term.trim()){
+            searchBook(term)
+            setValid(true)
+        }
+    }
+    useEffect(()=>{
 
-    
+    },[term])
+
     const renderItem = ({item}) => (
         <ListItem 
             title={item.title}
@@ -25,11 +35,14 @@ const SearchScreen = () => {
             <SearchBar
                 value={term}
                 onChangeText={setTerm}
-                onEndEditing={() => searchBook(term)}/>
-            {errorMessage ? <Text>{errorMessage}</Text> : null}
+                onEndEditing={()=>isValid()}
+                />
+            {!valid && <Text style={styles.textLabel}>Enter book name to search</Text>}
+            {!valid ? errorMessage ? <Text style={styles.textLabel}>{errorMessage}</Text> : null  : null}            
+            {!!result? result.length <=0? <Text style={styles.textLabel}>No such book available</Text> : null:null}
+
             <FlatList 
                 data={result}
-                // keyExtractor={(result) => result.key}
                 renderItem={renderItem}/>
         </View>
     )
@@ -39,9 +52,15 @@ const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: '#fff',
-      marginTop:'10%'
-    //   alignItems: 'center',
-    //   justifyContent: 'center',
+      marginTop:'10%',
+    //   alignItems: 'stretch',
+      justifyContent: 'center',
     },
+    textLabel:{
+        flex:1,
+        fontSize:20,
+        position:'absolute',
+        alignSelf:'center'
+    }
   });
 export default SearchScreen;

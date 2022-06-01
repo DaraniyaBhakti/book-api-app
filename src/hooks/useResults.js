@@ -11,20 +11,14 @@ export default () => {
         try{
             const response = await bookApi.get('/search.json?',{
                 params:{
-                    limit:5,
+                    limit:15,
                     title: searchTerm
                 }
             });
          setResult( response.data.docs);
-        //     for (let i =0;i<response.data.docs.length ; i++)
-        //     {
-        //     console.log("response", response.data.docs[i].title +"   "+response.data.docs[i].author_name
-        //         +"    "+response.data.docs[i].first_publish_year+"   "+response.data.docs[i].cover_i);
-        // }
         }
         catch(err){
-            setErrorMessage(err+"Got error")
-            console.log('empty result')
+            setErrorMessage('Something went wrong!')
         }
     }
 
